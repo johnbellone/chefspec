@@ -22,7 +22,12 @@ module ChefSpec
     # Setup and install the necessary  dependencies in the temporary directory
     #
     def setup!
-      policyfile_path = File.join(Dir.pwd, 'Policyfile.rb')
+      options = RSpec.configuration.policyfile_options
+      unless options.is_a?(Hash)
+        raise InvalidPolicyfileOptions(value: options.inspect)
+      end
+
+      policyfile_path = options.fetch(:policyfile_path, File.join(Dir.pwd, 'Policyfile.rb'))
 
       installer = ChefDK::PolicyfileServices::Install.new(
         policyfile: policyfile_path,
